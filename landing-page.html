@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramon Nunes | Especialista Power BI para Construtoras e Incorporadoras</title>
+  <meta name="description" content="Transformo dados do Mega e Anapro em dashboards estratégicos no Power BI. Decisões em tempo real, sem planilhas, sem retrabalho." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:   #0F2440;
+      --blue:   #1D4ED8;
+      --blue2:  #2563EB;
+      --accent: #F59E0B;
+      --green:  #16A34A;
+      --light:  #EFF6FF;
+      --gray:   #6B7280;
+      --gray2:  #F3F4F6;
+      --white:  #FFFFFF;
+      --dark:   #111827;
+      --border: #E5E7EB;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: var(--dark); background: var(--white); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(15,36,64,0.97); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6%; height: 68px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo-icon {
+      width: 40px; height: 40px; background: var(--accent);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 18px; color: var(--navy);
+    }
+    .nav-logo-text { color: var(--white); font-size: 16px; font-weight: 600; }
+    .nav-logo-text span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--accent); color: var(--navy);
+      padding: 10px 22px; border-radius: 8px; font-weight: 700;
+      font-size: 14px; text-decoration: none; transition: transform .2s, box-shadow .2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.4); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0F2440 0%, #1a3a6b 60%, #0d3260 100%);
+      display: flex; align-items: center;
+      padding: 100px 6% 60px;
+      position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #hero::after {
+      content: '';
+      position: absolute; bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { max-width: 700px; position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+      color: var(--accent); padding: 6px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; margin-bottom: 28px;
+    }
+    .hero-badge::before { content: '●'; font-size: 8px; }
+    .hero-title {
+      font-size: clamp(32px, 4.5vw, 56px);
+      font-weight: 800; color: var(--white);
+      line-height: 1.15; margin-bottom: 24px;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-sub {
+      font-size: 18px; color: rgba(255,255,255,0.75);
+      line-height: 1.7; margin-bottom: 40px; max-width: 580px;
+    }
+    .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-primary {
+      background: var(--accent); color: var(--navy);
+      padding: 16px 32px; border-radius: 10px; font-weight: 800;
+      font-size: 16px; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 10px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,0.4); }
+    .btn-secondary {
+      background: transparent; color: var(--white);
+      padding: 16px 32px; border-radius: 10px; font-weight: 600;
+      font-size: 16px; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 10px;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      transition: border-color .2s, background .2s;
+    }
+    .btn-secondary:hover { border-color: var(--white); background: rgba(255,255,255,0.07); }
+    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 32px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .hero-stat-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+    .hero-visual {
+      position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+      width: min(420px, 38vw);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 24px;
+      backdrop-filter: blur(10px);
+    }
+    .dash-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px; padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-title { color: rgba(255,255,255,0.6); font-size: 13px; }
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .kpi-card {
+      background: rgba(255,255,255,0.06); border-radius: 10px;
+      padding: 14px; border: 1px solid rgba(255,255,255,0.08);
+    }
+    .kpi-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .kpi-value { font-size: 20px; font-weight: 700; color: var(--white); }
+    .kpi-trend { font-size: 11px; color: #34D399; margin-top: 4px; }
+    .kpi-trend.red { color: #F87171; }
+    .dash-bar-row { margin-bottom: 10px; }
+    .dash-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 5px; }
+    .dash-bar-track { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; }
+    .dash-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue2), var(--accent)); }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 80px 6%; }
+    .section-label {
+      display: inline-block; background: var(--light);
+      color: var(--blue2); font-size: 12px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 6px; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(26px, 3vw, 40px); font-weight: 800;
+      color: var(--navy); line-height: 1.25; margin-bottom: 16px;
+    }
+    .section-title span { color: var(--blue2); }
+    .section-sub { font-size: 17px; color: var(--gray); max-width: 580px; line-height: 1.7; }
+
+    /* ── PROBLEMAS ── */
+    #problemas { background: var(--gray2); }
+    .prob-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 48px; }
+    .prob-card {
+      background: var(--white); border-radius: 14px;
+      padding: 28px; border: 1px solid var(--border);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .prob-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-3px); }
+    .prob-icon { font-size: 28px; margin-bottom: 16px; }
+    .prob-card h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .prob-card p { font-size: 14px; color: var(--gray); line-height: 1.6; }
+
+    /* ── SOLUCOES ── */
+    #solucoes { background: var(--white); }
+    .sol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 48px; }
+    .sol-card {
+      border-radius: 16px; padding: 32px;
+      border: 1.5px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .sol-card:hover { box-shadow: 0 12px 40px rgba(29,78,216,0.12); transform: translateY(-4px); }
+    .sol-card.featured {
+      background: var(--navy); border-color: var(--navy);
+      color: var(--white);
+    }
+    .sol-card.featured .sol-card-title { color: var(--white); }
+    .sol-card.featured .sol-card-desc { color: rgba(255,255,255,0.7); }
+    .sol-card.featured .sol-item { color: rgba(255,255,255,0.85); }
+    .sol-badge {
+      position: absolute; top: 20px; right: 20px;
+      background: var(--accent); color: var(--navy);
+      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+    }
+    .sol-card-icon { font-size: 36px; margin-bottom: 20px; }
+    .sol-card-title { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .sol-card-price { font-size: 28px; font-weight: 800; color: var(--blue2); margin-bottom: 8px; }
+    .sol-card.featured .sol-card-price { color: var(--accent); }
+    .sol-card-desc { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 24px; }
+    .sol-items { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .sol-item { font-size: 14px; color: var(--dark); display: flex; align-items: flex-start; gap: 10px; }
+    .sol-item::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; }
+    .sol-card.featured .sol-item::before { color: var(--accent); }
+    .sol-btn {
+      display: block; text-align: center; padding: 13px 24px;
+      border-radius: 10px; font-weight: 700; font-size: 14px;
+      text-decoration: none; transition: all .2s;
+      background: var(--light); color: var(--blue2); border: 1.5px solid var(--blue2);
+    }
+    .sol-btn:hover { background: var(--blue2); color: var(--white); }
+    .sol-card.featured .sol-btn {
+      background: var(--accent); color: var(--navy); border-color: var(--accent);
+    }
+    .sol-card.featured .sol-btn:hover { background: #FBBF24; }
+
+    /* ── COMO FUNCIONA ── */
+    #processo { background: var(--navy); }
+    #processo .section-title { color: var(--white); }
+    #processo .section-label { background: rgba(245,158,11,0.15); color: var(--accent); }
+    #processo .section-sub { color: rgba(255,255,255,0.65); }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; margin-top: 56px; position: relative; }
+    .step {
+      padding: 32px 28px; position: relative; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    .step:last-child { border-right: none; }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--accent); color: var(--navy);
+      font-size: 20px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .step-title { font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
+    .step-desc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+    .step-arrow {
+      position: absolute; right: -16px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent); font-size: 22px; z-index: 1;
+    }
+
+    /* ── PARA QUEM ── */
+    #para-quem { background: var(--gray2); }
+    .audience-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 48px; }
+    .audience-card {
+      background: var(--white); border-radius: 14px; padding: 28px;
+      border: 1.5px solid var(--border);
+      display: flex; flex-direction: column; gap: 14px;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .audience-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.08); border-color: var(--blue2); }
+    .audience-icon { font-size: 36px; }
+    .audience-title { font-size: 17px; font-weight: 700; color: var(--navy); }
+    .audience-desc { font-size: 14px; color: var(--gray); line-height: 1.6; }
+    .audience-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      background: var(--light); color: var(--blue2);
+      font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+    }
+
+    /* ── DIFERENCIAIS ── */
+    #diferenciais { background: var(--white); }
+    .diff-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 48px; }
+    .diff-visual {
+      background: linear-gradient(135deg, var(--navy), #1a3a6b);
+      border-radius: 20px; padding: 40px; color: var(--white);
+      position: relative; overflow: hidden;
+    }
+    .diff-visual::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(245,158,11,0.2), transparent);
+    }
+    .diff-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--accent); display: flex; align-items: center;
+      justify-content: center; font-size: 32px; margin-bottom: 24px;
+    }
+    .diff-visual h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+    .diff-visual p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 24px; }
+    .diff-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .diff-chip {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600;
+      padding: 6px 12px; border-radius: 6px;
+    }
+    .diff-list { display: flex; flex-direction: column; gap: 24px; }
+    .diff-item { display: flex; gap: 18px; align-items: flex-start; }
+    .diff-item-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      background: var(--light); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .diff-item-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .diff-item-desc { font-size: 14px; color: var(--gray); line-height: 1.6; }
+
+    /* ── DEPOIMENTOS ── */
+    #depoimentos { background: var(--gray2); }
+    .dep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 48px; }
+    .dep-card {
+      background: var(--white); border-radius: 16px; padding: 32px;
+      border: 1px solid var(--border); position: relative;
+    }
+    .dep-quote { font-size: 48px; color: var(--accent); line-height: 1; margin-bottom: 16px; font-family: Georgia, serif; }
+    .dep-text { font-size: 15px; color: var(--dark); line-height: 1.7; margin-bottom: 24px; font-style: italic; }
+    .dep-author { display: flex; align-items: center; gap: 14px; }
+    .dep-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--navy); display: flex; align-items: center;
+      justify-content: center; color: var(--white); font-weight: 700; font-size: 16px;
+    }
+    .dep-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+    .dep-role { font-size: 13px; color: var(--gray); }
+    .dep-stars { color: var(--accent); font-size: 14px; margin-top: 4px; }
+
+    /* ── CTA FINAL ── */
+    #contato {
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a8a 100%);
+      text-align: center; padding: 100px 6%;
+      position: relative; overflow: hidden;
+    }
+    #contato::before {
+      content: '';
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(245,158,11,0.1), transparent 60%);
+      pointer-events: none;
+    }
+    #contato .section-label { background: rgba(245,158,11,0.15); color: var(--accent); margin-bottom: 20px; }
+    #contato .section-title { color: var(--white); margin-bottom: 20px; }
+    #contato .section-sub { color: rgba(255,255,255,0.7); margin: 0 auto 48px; text-align: center; }
+    .contact-options { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-whatsapp {
+      background: #25D366; color: var(--white);
+      padding: 18px 36px; border-radius: 12px; font-weight: 800;
+      font-size: 17px; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 12px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.35); }
+    .btn-email {
+      background: rgba(255,255,255,0.1); color: var(--white);
+      padding: 18px 36px; border-radius: 12px; font-weight: 700;
+      font-size: 17px; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 12px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      transition: background .2s;
+    }
+    .btn-email:hover { background: rgba(255,255,255,0.18); }
+    .contact-note { margin-top: 28px; font-size: 14px; color: rgba(255,255,255,0.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #080F1A; color: rgba(255,255,255,0.5);
+      padding: 32px 6%; display: flex;
+      justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px; font-size: 14px;
+    }
+    footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    /* ── RESPONSIVO ── */
+    @media (max-width: 900px) {
+      .hero-visual { display: none; }
+      .diff-layout { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .step { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .step:last-child { border-bottom: none; }
+      .step-arrow { display: none; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 60px 5%; }
+      .hero-ctas { flex-direction: column; }
+      .hero-stats { gap: 24px; }
+      .contact-options { flex-direction: column; align-items: center; }
+    }
+
+    /* ── ANIMAÇÕES ── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-icon">BI</div>
+    <span class="nav-logo-text">Ramon <span>Nunes</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#problemas">Problemas</a></li>
+    <li><a href="#solucoes">Serviços</a></li>
+    <li><a href="#processo">Como funciona</a></li>
+    <li><a href="#para-quem">Para quem</a></li>
+    <li><a href="#diferenciais">Sobre mim</a></li>
+  </ul>
+  <a href="https://wa.me/5511942488630?text=Olá%20Ramon,%20quero%20um%20diagnóstico%20gratuito!" class="nav-cta" target="_blank">
+    Diagnóstico gratuito
+  </a>
+</nav>
+
+<!-- ═══════════════════════════════════════ HERO -->
+<section id="hero">
+  <div class="hero-content fade-up">
+    <div class="hero-badge">Especialista Power BI · Mega · Anapro</div>
+    <h1 class="hero-title">
+      Seus dados já estão no sistema.<br/>
+      <span>Falta só chegar até você.</span>
+    </h1>
+    <p class="hero-sub">
+      Conecto o Mega e o Anapro ao Power BI e criamos dashboards que atualizam automaticamente — com visões que o próprio sistema não entrega. Decisões em tempo real, sem planilhas, sem retrabalho.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://wa.me/5511942488630?text=Olá%20Ramon,%20quero%20um%20diagnóstico%20gratuito!" class="btn-primary" target="_blank">
+        📊 Quero meu diagnóstico gratuito
+      </a>
+      <a href="#solucoes" class="btn-secondary">
+        Ver serviços →
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">100%</div>
+        <div class="hero-stat-label">Remoto · Brasil</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2–4</div>
+        <div class="hero-stat-label">semanas de entrega</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">12+</div>
+        <div class="hero-stat-label">anos em gestão</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard mockup -->
+  <div class="hero-visual fade-up">
+    <div class="dash-header">
+      <div class="dash-dot" style="background:#F87171"></div>
+      <div class="dash-dot" style="background:#FBBF24"></div>
+      <div class="dash-dot" style="background:#34D399"></div>
+      <span class="dash-title" style="margin-left:8px">Dashboard Financeiro · Power BI</span>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Recebimentos</div>
+        <div class="kpi-value">R$ 847k</div>
+        <div class="kpi-trend">↑ +12% vs mês anterior</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Inadimplência</div>
+        <div class="kpi-value">4,3%</div>
+        <div class="kpi-trend red">↑ +0,8% alerta</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Contratos ativos</div>
+        <div class="kpi-value">142</div>
+        <div class="kpi-trend">● 98% em dia</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Receita projetada</div>
+        <div class="kpi-value">R$ 1,2M</div>
+        <div class="kpi-trend">↑ Meta: R$ 1,1M</div>
+      </div>
+    </div>
+    <div class="dash-bar-row">
+      <div class="dash-bar-label"><span>Torre Alpha</span><span>82%</span></div>
+      <div class="dash-bar-track"><div class="dash-bar-fill" style="width:82%"></div></div>
+    </div>
+    <div class="dash-bar-row">
+      <div class="dash-bar-label"><span>Residencial Verde</span><span>67%</span></div>
+      <div class="dash-bar-track"><div class="dash-bar-fill" style="width:67%"></div></div>
+    </div>
+    <div class="dash-bar-row">
+      <div class="dash-bar-label"><span>Condomínio Sol</span><span>91%</span></div>
+      <div class="dash-bar-track"><div class="dash-bar-fill" style="width:91%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ PROBLEMAS -->
+<section id="problemas">
+  <div class="fade-up">
+    <span class="section-label">O problema</span>
+    <h2 class="section-title">Seu sistema tem os dados.<br/><span>Mas eles não chegam até você.</span></h2>
+    <p class="section-sub">Reconhece alguma dessas situações? São os problemas mais comuns nas construtoras e incorporadoras que atendo.</p>
+  </div>
+  <div class="prob-grid">
+    <div class="prob-card fade-up">
+      <div class="prob-icon">📊</div>
+      <h3>Relatórios manuais que consomem horas</h3>
+      <p>Alguém da equipe passa horas toda semana baixando dados, cruzando planilhas e montando relatórios para a diretoria. Informação atrasada, retrabalho constante.</p>
+    </div>
+    <div class="prob-card fade-up">
+      <div class="prob-icon">🔍</div>
+      <h3>Sem visão do que o Mega e o Anapro não entregam</h3>
+      <p>O ERP tem os dados mas não tem as visões consolidadas que o gestor precisa. Abertura de receitas, posição por empreendimento, inadimplência por origem — tudo manual.</p>
+    </div>
+    <div class="prob-card fade-up">
+      <div class="prob-icon">💸</div>
+      <h3>Inadimplência descoberta tarde demais</h3>
+      <p>Quando você percebe o problema, os valores já acumularam. Sem um painel de alertas automáticos, a gestão de recebíveis sempre chega atrasada.</p>
+    </div>
+    <div class="prob-card fade-up">
+      <div class="prob-icon">🎯</div>
+      <h3>Decisões no "achômetro"</h3>
+      <p>A diretoria toma decisões estratégicas sem dados confiáveis em tempo real. Informação espalhada em Excel, ERP e e-mails — sem uma visão única e confiável.</p>
+    </div>
+    <div class="prob-card fade-up">
+      <div class="prob-icon">🔄</div>
+      <h3>BI que ninguém usa</h3>
+      <p>Algumas empresas já tentaram implantar BI, mas os dashboards ficaram complexos demais ou desatualizados. O time voltou para as planilhas.</p>
+    </div>
+    <div class="prob-card fade-up">
+      <div class="prob-icon">📱</div>
+      <h3>Dados que não chegam em tempo real</h3>
+      <p>O gestor precisa pedir para alguém "rodar o relatório". Em 2026, isso não deveria mais acontecer. O número precisa estar disponível na hora que precisar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SOLUÇÕES -->
+<section id="solucoes">
+  <div class="fade-up">
+    <span class="section-label">Serviços</span>
+    <h2 class="section-title">Escolha como <span>começar</span></h2>
+    <p class="section-sub">Três formas de trabalhar juntos, do diagnóstico inicial ao acompanhamento contínuo dos seus dados.</p>
+  </div>
+  <div class="sol-grid">
+    <div class="sol-card fade-up">
+      <div class="sol-card-icon">🔍</div>
+      <div class="sol-card-title">Diagnóstico</div>
+      <p class="sol-card-desc">Avaliação completa da maturidade de dados da sua empresa. Identifico onde estão os gargalos e o que é possível resolver com BI.</p>
+      <ul class="sol-items">
+        <li class="sol-item">Análise dos sistemas e fontes de dados atuais</li>
+        <li class="sol-item">Mapeamento das principais dores e oportunidades</li>
+        <li class="sol-item">Relatório com roadmap de BI de 90 dias</li>
+        <li class="sol-item">Apresentação para a diretoria</li>
+        <li class="sol-item">Prazo: 5 a 7 dias úteis</li>
+      </ul>
+      <a href="https://wa.me/5511942488630?text=Quero%20o%20Diagnóstico%20de%20BI" class="sol-btn" target="_blank">Quero o diagnóstico</a>
+    </div>
+    <div class="sol-card featured fade-up">
+      <div class="sol-badge">Mais contratado</div>
+      <div class="sol-card-icon">📊</div>
+      <div class="sol-card-title">Implantação BI</div>
+      <p class="sol-card-desc">Desenvolvimento completo do ambiente de BI conectado ao Mega ou Anapro, com dashboards prontos para uso da diretoria.</p>
+      <ul class="sol-items">
+        <li class="sol-item">Conexão direta ao banco de dados (Mega/Anapro)</li>
+        <li class="sol-item">3 a 5 dashboards gerenciais e operacionais</li>
+        <li class="sol-item">ETL com Pentaho ou Power Query</li>
+        <li class="sol-item">Automação de atualização com Power Automate</li>
+        <li class="sol-item">Treinamento da equipe (2 sessões)</li>
+        <li class="sol-item">Documentação completa entregue</li>
+        <li class="sol-item">Prazo: 2 a 4 semanas</li>
+      </ul>
+      <a href="https://wa.me/5511942488630?text=Quero%20a%20Implantação%20de%20BI" class="sol-btn" target="_blank">Quero a implantação</a>
+    </div>
+    <div class="sol-card fade-up">
+      <div class="sol-card-icon">🔄</div>
+      <div class="sol-card-title">Parceria Mensal</div>
+      <p class="sol-card-desc">Contrato recorrente para manutenção, evolução e suporte contínuo do seu ambiente de BI. Seu especialista de dados dedicado.</p>
+      <ul class="sol-items">
+        <li class="sol-item">Manutenção e atualização dos dashboards</li>
+        <li class="sol-item">Novas visões e indicadores mensais</li>
+        <li class="sol-item">Suporte prioritário via WhatsApp</li>
+        <li class="sol-item">Reunião mensal de análise de dados</li>
+        <li class="sol-item">Integração de novas fontes de dados</li>
+      </ul>
+      <a href="https://wa.me/5511942488630?text=Quero%20a%20Parceria%20Mensal" class="sol-btn" target="_blank">Quero a parceria</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ PROCESSO -->
+<section id="processo">
+  <div class="fade-up">
+    <span class="section-label">Como funciona</span>
+    <h2 class="section-title">Do primeiro contato ao dashboard<br/>pronto para usar</h2>
+    <p class="section-sub">Processo simples e transparente. Você sabe exatamente o que acontece em cada etapa.</p>
+  </div>
+  <div class="steps">
+    <div class="step fade-up">
+      <div class="step-num">1</div>
+      <h3 class="step-title">Diagnóstico de 20 min</h3>
+      <p class="step-desc">Conversa rápida para entender sua operação, sistemas usados e as principais dores com dados. Sem compromisso, sem custo.</p>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">2</div>
+      <h3 class="step-title">Proposta personalizada</h3>
+      <p class="step-desc">Em até 24h você recebe uma proposta com escopo, prazo e investimento baseados exatamente no que você precisa.</p>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">3</div>
+      <h3 class="step-title">Conexão e modelagem</h3>
+      <p class="step-desc">Conecto ao seu banco de dados, modelo as tabelas e crio a estrutura de dados que vai alimentar os dashboards.</p>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">4</div>
+      <h3 class="step-title">Dashboards entregues</h3>
+      <p class="step-desc">Apresento os painéis, treino sua equipe e entrego a documentação. Sua diretoria começa a tomar decisões com dados no mesmo dia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ PARA QUEM -->
+<section id="para-quem">
+  <div class="fade-up">
+    <span class="section-label">Para quem é</span>
+    <h2 class="section-title">Atendo empresas que <span>reconhecem</span><br/>o valor dos dados</h2>
+    <p class="section-sub">Se sua empresa se encaixa em um dos perfis abaixo, posso te ajudar a transformar dados em decisões.</p>
+  </div>
+  <div class="audience-grid">
+    <div class="audience-card fade-up">
+      <div class="audience-icon">🏗️</div>
+      <div class="audience-title">Construtoras e Incorporadoras</div>
+      <p class="audience-desc">Empresas que usam Mega ou Anapro e precisam de visão financeira, controle de contratos e gestão comercial integrada.</p>
+      <div class="audience-tags">
+        <span class="tag">Mega ERP</span>
+        <span class="tag">Anapro</span>
+        <span class="tag">Contratos</span>
+        <span class="tag">Inadimplência</span>
+      </div>
+    </div>
+    <div class="audience-card fade-up">
+      <div class="audience-icon">📋</div>
+      <div class="audience-title">Empresas com planilhas como BI</div>
+      <p class="audience-desc">Organizações que ainda dependem de Excel e Google Sheets para gestão — e sabem que isso não é mais sustentável.</p>
+      <div class="audience-tags">
+        <span class="tag">Excel</span>
+        <span class="tag">Google Sheets</span>
+        <span class="tag">Automação</span>
+      </div>
+    </div>
+    <div class="audience-card fade-up">
+      <div class="audience-icon">🔄</div>
+      <div class="audience-title">BI implantado mas não utilizado</div>
+      <p class="audience-desc">Empresas que já investiram em Power BI mas os dashboards ficaram complexos, desatualizados ou sem adoção pelo time.</p>
+      <div class="audience-tags">
+        <span class="tag">Revitalização</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">Adoção</span>
+      </div>
+    </div>
+    <div class="audience-card fade-up">
+      <div class="audience-icon">🔌</div>
+      <div class="audience-title">Múltiplas fontes de dados</div>
+      <p class="audience-desc">Empresas com dados espalhados em ERP, CRM, planilhas e APIs que precisam de uma visão unificada e confiável.</p>
+      <div class="audience-tags">
+        <span class="tag">ETL</span>
+        <span class="tag">Integração</span>
+        <span class="tag">SQL Server</span>
+        <span class="tag">Oracle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ DIFERENCIAIS -->
+<section id="diferenciais">
+  <div class="fade-up">
+    <span class="section-label">Por que eu</span>
+    <h2 class="section-title">Não sou só técnico.<br/><span>Fui o gestor que precisava desses dados.</span></h2>
+  </div>
+  <div class="diff-layout">
+    <div class="diff-visual fade-up">
+      <div class="diff-avatar">👤</div>
+      <h3>Ramon Nunes</h3>
+      <p>Especialista em Business Intelligence com raízes na gestão operacional. Passei 12 anos como supervisor, coordenador e gerente em empresas de serviços — sei o que um gestor precisa enxergar para tomar decisão, porque fui esse gestor.</p>
+      <div class="diff-chips">
+        <span class="diff-chip">Power BI</span>
+        <span class="diff-chip">Power Automate</span>
+        <span class="diff-chip">DAX</span>
+        <span class="diff-chip">SQL</span>
+        <span class="diff-chip">Pentaho</span>
+        <span class="diff-chip">Talend</span>
+        <span class="diff-chip">Python</span>
+        <span class="diff-chip">Mega ERP</span>
+        <span class="diff-chip">Anapro</span>
+        <span class="diff-chip">SQL Server</span>
+        <span class="diff-chip">PostgreSQL</span>
+        <span class="diff-chip">Oracle</span>
+      </div>
+    </div>
+    <div class="diff-list fade-up">
+      <div class="diff-item">
+        <div class="diff-item-icon">🎯</div>
+        <div>
+          <div class="diff-item-title">Foco no negócio, não na tecnologia</div>
+          <p class="diff-item-desc">Crio dashboards que gestores usam de verdade — não painéis bonitos que ninguém entende. A pergunta sempre é: qual decisão esse dado vai apoiar?</p>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-item-icon">⚡</div>
+        <div>
+          <div class="diff-item-title">Especialista em Mega e Anapro</div>
+          <p class="diff-item-desc">Conheço a estrutura do banco de dados desses sistemas a fundo. Sem curva de aprendizado — começo a gerar valor desde o primeiro acesso.</p>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-item-icon">🔄</div>
+        <div>
+          <div class="diff-item-title">Entrega rápida e documentada</div>
+          <p class="diff-item-desc">Prazo médio de 2 a 4 semanas para implantação completa. Tudo documentado para que sua equipe tenha autonomia depois.</p>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-item-icon">🌎</div>
+        <div>
+          <div class="diff-item-title">100% remoto, todo o Brasil</div>
+          <p class="diff-item-desc">Atendo empresas de Norte a Sul sem custo de deslocamento. A distância não é barreira — o acesso ao banco de dados é tudo que preciso.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ DEPOIMENTOS -->
+<section id="depoimentos">
+  <div class="fade-up">
+    <span class="section-label">Depoimentos</span>
+    <h2 class="section-title">O que dizem <span>quem já transformou</span><br/>os dados do negócio</h2>
+  </div>
+  <div class="dep-grid">
+    <div class="dep-card fade-up">
+      <div class="dep-quote">"</div>
+      <p class="dep-text">O que mais me surpreendeu foi a velocidade. Em menos de 3 semanas tínhamos o painel financeiro rodando com dados do Mega em tempo real. A diretoria parou de pedir relatórios manuais no mesmo dia da entrega.</p>
+      <div class="dep-author">
+        <div class="dep-avatar">MR</div>
+        <div>
+          <div class="dep-name">Marcelo R.</div>
+          <div class="dep-role">Diretor Financeiro · Incorporadora SP</div>
+          <div class="dep-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+    <div class="dep-card fade-up">
+      <div class="dep-quote">"</div>
+      <p class="dep-text">Ramon entendeu nossa operação rapidamente. Ele criou um dashboard de gestão de contratos que identificou inadimplência concentrada em uma filial — problema que não enxergávamos antes. Recuperamos mais de R$ 120k.</p>
+      <div class="dep-author">
+        <div class="dep-avatar">AC</div>
+        <div>
+          <div class="dep-name">Ana C.</div>
+          <div class="dep-role">Gerente Comercial · Construtora RJ</div>
+          <div class="dep-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+    <div class="dep-card fade-up">
+      <div class="dep-quote">"</div>
+      <p class="dep-text">Tentamos implantar BI antes com outra empresa e os dashboards ficaram complexos e abandonados. Com o Ramon foi diferente — simples, focado no que importa e a equipe adotou desde o primeiro dia.</p>
+      <div class="dep-author">
+        <div class="dep-avatar">FS</div>
+        <div>
+          <div class="dep-name">Felipe S.</div>
+          <div class="dep-role">CEO · Incorporadora MG</div>
+          <div class="dep-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ CTA FINAL -->
+<section id="contato">
+  <div class="fade-up">
+    <span class="section-label">Vamos começar</span>
+    <h2 class="section-title">Pronto para tomar decisões<br/>com dados em tempo real?</h2>
+    <p class="section-sub">Faço um diagnóstico gratuito de 20 minutos para mostrar o que seria possível resolver no seu caso. Sem compromisso, sem custo.</p>
+    <div class="contact-options">
+      <a href="https://wa.me/5511942488630?text=Olá%20Ramon,%20quero%20um%20diagnóstico%20gratuito%20de%20BI!" class="btn-whatsapp" target="_blank">
+        💬 Falar no WhatsApp
+      </a>
+      <a href="mailto:ramonjcnunes@gmail.com?subject=Quero%20um%20diagnóstico%20de%20BI&body=Olá%20Ramon,%20gostaria%20de%20agendar%20um%20diagnóstico%20gratuito." class="btn-email">
+        ✉️ Enviar e-mail
+      </a>
+    </div>
+    <p class="contact-note">📍 100% remoto · Todo o Brasil · Atendimento em até 24h</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ FOOTER -->
+<footer>
+  <span>© 2026 Ramon Nunes · Especialista Power BI · <a href="mailto:ramonjcnunes@gmail.com">ramonjcnunes@gmail.com</a></span>
+  <span>
+    <a href="https://www.linkedin.com/in/ramon-nunes/" target="_blank">LinkedIn</a> ·
+    <a href="#hero">Voltar ao topo ↑</a>
+  </span>
+</footer>
+
+<!-- ═══════════════════════════════════════ JS -->
+<script>
+  // Fade-up on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        observer.unobserve(el.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Smooth nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'white' : 'rgba(255,255,255,0.75)';
+    });
+  });
+</script>
+
+</body>
+</html>
